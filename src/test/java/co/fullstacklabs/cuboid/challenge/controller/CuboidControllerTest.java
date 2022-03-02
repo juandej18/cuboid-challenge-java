@@ -2,6 +2,8 @@ package co.fullstacklabs.cuboid.challenge.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,37 +39,79 @@ class CuboidControllerTest {
 
     @Test
     void shouldUpdateCuboid() throws Exception {
-        assertTrue(true);
+    	CuboidDTO cuboidDTO = CuboidDTO.builder().id(1l)
+                .width(1f).height(3f).depth(2f).volume(12d).bagId(3L).build();
+
+        this.mockMvc.perform(put(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cuboidDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     void invalidInputInUpdateShouldReturnError() throws Exception {
-        assertTrue(true);
+    	CuboidDTO cuboidDTO = CuboidDTO.builder().id(1l)
+                .width(1f).depth(2f).volume(12d).bagId(3L).build();
+
+        this.mockMvc.perform(put(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cuboidDTO)))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.violations", IsNot.not(IsNull.nullValue())));
+
     }
 
     @Test
     void shouldGetErrorWhenCuboidByIdIsEmpty() throws Exception {
-        assertTrue(true);
+    	CuboidDTO cuboidDTO = CuboidDTO.builder()
+                .width(1f).height(2f).depth(2f).volume(12d).bagId(3L).build();
+
+        this.mockMvc.perform(put(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cuboidDTO)))
+        .andExpect(status().isUnprocessableEntity());
+
     }
 
     @Test
     void shouldGetErrorOnUpdateWhenBagIdIsNotFound() throws Exception {
-        assertTrue(true);
+    	CuboidDTO cuboidDTO = CuboidDTO.builder().id(1l)
+                .width(1f).height(2f).depth(2f).volume(12d).bagId(300L).build();
+
+        this.mockMvc.perform(put(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cuboidDTO)))
+        .andExpect(status().isNotFound());
+
     }
 
     @Test
     void shouldGetErrorOnUpdateWhenBagCantProcessCuboidVolumeChange() throws Exception {
-        assertTrue(true);
+    	CuboidDTO cuboidDTO = CuboidDTO.builder().id(1l)
+                .width(1f).height(2f).depth(12f).volume(24d).bagId(1L).build();
+
+        this.mockMvc.perform(put(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cuboidDTO)))
+        .andExpect(status().isUnprocessableEntity());
+
     }
 
     @Test
     void shouldDeleteCuboid() throws Exception {
-        assertTrue(true);
+    	CuboidDTO cuboidDTO = CuboidDTO.builder().id(2l)
+                .width(1f).height(3f).depth(2f).volume(12d).bagId(3L).build();
+
+        this.mockMvc.perform(delete(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cuboidDTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     void shouldNotDeleteWhenCuboidNotFound() throws Exception {
-        assertTrue(true);
+    	CuboidDTO cuboidDTO = CuboidDTO.builder().id(100l)
+                .width(1f).height(2f).depth(2f).volume(12d).bagId(3L).build();
+
+        this.mockMvc.perform(put(PATH).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cuboidDTO)))
+        .andExpect(status().isNotFound());
     }
     
     /************************************************************

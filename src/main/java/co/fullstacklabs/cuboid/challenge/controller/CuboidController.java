@@ -38,5 +38,16 @@ public class CuboidController {
     public List<CuboidDTO> getAll() {
         return service.getAll();
     }
-
+    
+    @PutMapping()
+    public ResponseEntity<CuboidDTO> update(@Valid @RequestBody final CuboidDTO cuboidDTO) {
+        CuboidDTO cuboid = service.update(cuboidDTO);
+        return new ResponseEntity<>(cuboid, HttpStatus.CREATED);
+    }
+    
+    @DeleteMapping()
+    public ResponseEntity<CuboidDTO> delete(@Valid @RequestBody final CuboidDTO cuboidDTO) {
+        CuboidDTO cuboid = service.delete(cuboidDTO);
+        return new ResponseEntity<>(cuboid, HttpStatus.OK);
+    }
 }
