@@ -26,4 +26,18 @@ public class BagDTO {
     private Double payloadVolume;
     private Double availableVolume;
     private List<CuboidDTO> cuboids;
+    
+    public Double getPayloadVolume() {
+    	if(payloadVolume == null) {
+    		payloadVolume = volume == null || cuboids == null ? 0D : cuboids.stream().mapToDouble(c -> c.getVolume()).sum();
+    	}
+    	return payloadVolume;
+    }
+    
+    public Double getAvailableVolume() {
+    	if(availableVolume == null) {
+    		availableVolume = volume == null || cuboids == null ? 0D : volume - cuboids.stream().mapToDouble(c -> c.getVolume()).sum();
+    	}
+    	return availableVolume;
+    }
 }
